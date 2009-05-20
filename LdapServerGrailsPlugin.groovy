@@ -2,6 +2,8 @@ import grails.ldap.server.TransientGrailsLdapServer
 
 class LdapServerGrailsPlugin {
 
+	static beanNameSuffix = "LdapServer"
+	
 	def version = "0.1"
 	def grailsVersion = "1.1 > *"
 	def dependsOn = [:]
@@ -13,6 +15,8 @@ class LdapServerGrailsPlugin {
 	def description = 'Allows the embedding of an LDAP directory (via ApacheDS) for testing purposes'
 
 	def documentation = "http://grails.org/plugin/grails-ldap-server"
+	
+	def watchedResources = "file:./ldap-server/**"
 
 	def servers = []
 	
@@ -21,24 +25,42 @@ class LdapServerGrailsPlugin {
 	}
 
 	def onChange = { event ->
-		// TODO Implement code that is executed when any artefact that this plugin is
-		// watching is modified and reloaded. The event contains: event.source,
-		// event.application, event.manager, event.ctx, and event.plugin.
+		handleChange.delegate = delegate
+		handleChange(event)
 	}
 
 	def onConfigChange = { event ->
-		// TODO Implement code that is executed when the project configuration changes.
-		// The event is the same as for 'onChange'.
+		handleChange.delegate = delegate
+		handleChange(event)
 	}
 
+	def handleChange = { event ->
+		servers.each { 
+			event.ctx.getBean(it).stop()
+			event.ctx.removeBeanDefinition(it)
+		}
+		servers.clear()
+		
+		def beanDefinitions = beans {
+			createServers(event.application.config.ldapServers, delegate)
+		}
+		
+		servers.each {
+			event.ctx.registerBeanDefinition(it, beanDefinitions.getBeanDefinition(it))
+			event.ctx.getBean(it).afterPropertiesSet()
+		}
+	}
+	
 	def createServers(config, beanBuilder) {
 		config.each { name, props ->
-			beanBuilder."$name"(TransientGrailsLdapServer) {
-				["port", "base", "indexed"].each {
-					if (props[it])
+			def beanName = name + beanNameSuffix
+			beanBuilder."$beanName"(TransientGrailsLdapServer) {
+				TransientGrailsLdapServer.configOptions.each {
+					if ((props[it] instanceof ConfigObject) == false)
 						delegate."$it" = props[it]
 				}
 			}
+			servers << beanName
 		}
 	}
 }

@@ -1,0 +1,20 @@
+dn: ou=test,dc=d1
+ou: test
+objectClass: top
+objectClass: organizationalUnit
+
+dn: cn=cn,dc=d1
+cn: cn
+sn: sn
+objectClass: person
+objectClass: top
+objectClass: organizationalPerson
+
+dn: cn=cn2,dc=d1
+cn: cn2
+sn: sn
+grailsLdapPluginAttribute: yeah
+objectClass: person
+objectClass: top
+objectClass: organizationalPerson
+objectClass: grailsLdapPluginObjectClass

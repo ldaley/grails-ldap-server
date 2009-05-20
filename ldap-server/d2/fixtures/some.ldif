@@ -1,0 +1,18 @@
+dn: ou=test,dc=d2
+ou: test
+objectClass: top
+objectClass: organizationalUnit
+
+dn: cn=cn,dc=d2
+cn: cn
+sn: sn
+objectClass: person
+objectClass: top
+objectClass: organizationalPerson
+
+dn: cn=cn2,dc=d2
+cn: cn2
+sn: sn
+objectClass: person
+objectClass: top
+objectClass: organizationalPerson
