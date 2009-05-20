@@ -1,0 +1,6 @@
+dn: cn=${cn},dc=d2
+cn: ${cn}
+sn: ${sn}
+objectClass: person
+objectClass: top
+objectClass: organizationalPerson

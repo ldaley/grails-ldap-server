@@ -1,0 +1,4 @@
+dn: ou=${ou},dc=d2
+ou: ${ou}
+objectClass: top
+objectClass: organizationalUnit

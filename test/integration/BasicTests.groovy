@@ -50,9 +50,22 @@ class BasicTests extends GroovyTestCase {
 		assertTrue(d1LdapServer.exists("ou=test,dc=d1"))
 	}
 	
-	void testLoadFixture() {
+	void testLoadFixtures() {
 		d2LdapServer.loadFixture("testou")
 		assertTrue(d2LdapServer.exists("ou=test,dc=d2"))
+		d2LdapServer.clean()
+		
+		d2LdapServer.loadFixtures("testou", "country")
+		assertTrue(d2LdapServer.exists("c=au,dc=d2"))
+	}
+	
+	void testLoadTemplatedFixtures() {
+		d2LdapServer.loadFixture("personTemplate", cn: "cn1", sn: "sn1")
+		assertTrue(d2LdapServer.exists("cn=cn1,dc=d2"))
+		
+		d2LdapServer.loadFixtures("personTemplate", "ouTemplate", cn: "cn2", sn: "sn2", ou: "ou1")
+		assertTrue(d2LdapServer.exists("cn=cn2,dc=d2"))
+		assertTrue(d2LdapServer.exists("ou=ou1,dc=d2"))
 	}
 
 	void testLoadLdif() {

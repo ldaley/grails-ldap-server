@@ -15,6 +15,8 @@ import org.springframework.beans.factory.BeanNameAware
 
 import grails.util.BuildSettingsHolder
 
+import groovy.text.SimpleTemplateEngine
+
 class TransientGrailsLdapServer implements InitializingBean, BeanNameAware {
 	
 	final static configOptions = ["port", "base", "indexed"]
@@ -98,12 +100,35 @@ class TransientGrailsLdapServer implements InitializingBean, BeanNameAware {
 		}
 	}
 
-	void loadFixture(fixtureName) {
-		def fixture = new File(fixturesDir, "${fixtureName}.ldif")
-		if (fixture.exists()) {
-			loadFromLdifFile(fixture)
-		} else {
-			throw new IllegalArgumentException("Cannot load fixture '${fixtureName} as it does not exist")
+	void loadFixture(String fixtureName) {
+		loadFixtures(fixtureName)
+	}
+
+	void loadFixture(Map binding, String fixtureName) {
+		loadFixtures([fixtureName] as String[], binding)
+	}
+	
+	void loadFixtures(String[] fixtureNames) {
+		loadFixtures(fixtureNames, [:])
+	}
+	
+	void loadFixtures(Map binding, String[] fixtureNames) {
+		loadFixtures(fixtureNames, binding)
+	}
+	
+	void loadFixtures(String[] fixtureNames, Map binding) {
+		binding = binding ?: [:]
+		fixtureNames.each { fixtureName ->
+			def fixture = new File(fixturesDir, "${fixtureName}.ldif")
+			if (fixture.exists()) {
+				def fixtureReader = new FileReader(fixture)
+				def engine = new SimpleTemplateEngine()
+				def ldif = engine.createTemplate(fixtureReader).make(binding).toString()
+				println ldif
+				loadLdif(ldif)
+			} else {
+				throw new IllegalArgumentException("Cannot load fixture '${fixtureName} as it does not exist")
+			}
 		}
 	}
 	
