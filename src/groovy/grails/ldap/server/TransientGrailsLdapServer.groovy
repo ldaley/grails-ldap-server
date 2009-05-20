@@ -19,7 +19,7 @@ class TransientGrailsLdapServer implements InitializingBean, BeanNameAware {
 	
 	final static configOptions = ["port", "base", "indexed"]
 	static baseWorkingDir = new File(BuildSettingsHolder.settings?.projectWorkDir, "ldap-server")
-	static baseConfigDir = new File("ldap-server")
+	static baseConfigDir = new File("grails-app/ldap-servers")
 	
 	String beanName
 	
