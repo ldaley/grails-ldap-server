@@ -115,6 +115,28 @@ class TransientGrailsLdapServer implements InitializingBean, BeanNameAware {
 		directoryService.adminSession.exists(new LdapDN(dn as String))
 	}
 	
+	Map get(String dn) {
+		try {
+			def entry = directoryService.adminSession.lookup(new LdapDN(dn))
+			def entryMap = [:]
+			entry.attributeTypes.each { at ->
+				def attribute = entry.get(at)
+				if (at.singleValue) {
+					entryMap[attribute.id] = (attribute.isHR()) ? attribute.string : attribute.bytes
+				} else {
+					def values = []
+					attribute.all.each {
+						values << it.get()
+					}
+					entryMap[attribute.id] = values
+				}
+			}
+			entryMap
+		} catch (LdapNameNotFoundException e) {
+			null
+		}
+	}
+	
 	private startDirectoryService() {
 		
 		directoryService = new DefaultDirectoryService()

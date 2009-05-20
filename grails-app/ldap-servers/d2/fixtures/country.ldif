@@ -1,0 +1,4 @@
+dn: c=au,dc=d2
+c: au
+objectClass: top
+objectClass: country

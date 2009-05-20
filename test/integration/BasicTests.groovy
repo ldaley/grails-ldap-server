@@ -51,7 +51,7 @@ class BasicTests extends GroovyTestCase {
 	}
 	
 	void testLoadFixture() {
-		d2LdapServer.loadFixture("some")
+		d2LdapServer.loadFixture("testou")
 		assertTrue(d2LdapServer.exists("ou=test,dc=d2"))
 	}
 
@@ -68,10 +68,25 @@ objectClass: organizationalPerson
 	}
 	
 	void testClean() {
-		d2LdapServer.loadFixture("some")
+		d2LdapServer.loadFixture("testou")
 		assertTrue(d2LdapServer.exists("ou=test,dc=d2"))
 		d2LdapServer.clean()
 		assertFalse(d2LdapServer.exists("ou=test,dc=d2"))
+	}
+	
+	void testGetEntry() {
+		d2LdapServer.loadFixture("some")
+		def entry = d2LdapServer.get("cn=cn2,dc=d2")
+		assertTrue(entry instanceof Map)
+		
+		assertTrue(entry.cn instanceof List)
+		assertEquals("cn2", entry.cn.first())
+		
+		assertTrue(entry.usercertificate.first() instanceof byte[])
+
+		d2LdapServer.loadFixture("country")
+		entry = d2LdapServer.get("c=au,dc=d2")
+		assertEquals("au", entry.c)
 	}
 	
 	void tearDown() {

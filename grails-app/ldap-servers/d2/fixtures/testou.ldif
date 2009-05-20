@@ -1,0 +1,4 @@
+dn: ou=test,dc=d2
+ou: test
+objectClass: top
+objectClass: organizationalUnit
