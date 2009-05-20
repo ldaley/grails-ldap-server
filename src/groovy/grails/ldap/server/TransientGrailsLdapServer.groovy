@@ -20,16 +20,16 @@ import groovy.text.SimpleTemplateEngine
 class TransientGrailsLdapServer implements InitializingBean, BeanNameAware {
 	
 	final static configOptions = ["port", "base", "indexed"]
-	static baseWorkingDir = new File(BuildSettingsHolder.settings?.projectWorkDir, "ldap-server")
-	static baseConfigDir = new File("grails-app/ldap-servers")
+	final static baseWorkingDir = new File(BuildSettingsHolder.settings?.projectWorkDir, "ldap-server")
+	final static baseConfigDir = new File("grails-app/ldap-servers")
 	
 	String beanName
 	
-	def port = 10389
-	def base = "dc=grails,dc=org"
-	def indexed = ["objectClass", "ou", "uid"]
+	Integer port = 10389
+	String base = "dc=grails,dc=org"
+	String[] indexed = ["objectClass", "ou", "uid"]
 	
-	def log 
+	private log 
 	
 	final directoryService
 	final ldapService

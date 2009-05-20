@@ -6,7 +6,7 @@ ldapServers {
 	d2 {
 		base = "dc=d2"
 		port = 10340
-		autoLoadLdif = false
+		indexed = ["objectClass"]
 	}
 }
 
