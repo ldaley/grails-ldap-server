@@ -132,11 +132,11 @@ class TransientGrailsLdapServer implements InitializingBean, BeanNameAware {
 		}
 	}
 	
-	void loadLdif(ldif) {
+	void loadLdif(String ldif) {
 		consumeLdifReader(new LdifReader(new StringReader(ldif)))
 	}
 	
-	def exists(dn) {
+	boolean exists(String dn) {
 		directoryService.adminSession.exists(new LdapDN(dn as String))
 	}
 	
