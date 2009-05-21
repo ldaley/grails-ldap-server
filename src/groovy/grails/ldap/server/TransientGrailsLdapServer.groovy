@@ -50,7 +50,7 @@ class TransientGrailsLdapServer implements InitializingBean, BeanNameAware {
 		if (!initialised) {
 			log = org.slf4j.LoggerFactory.getLogger(this.class)
 
-			log.debug("${beanName} config: " + configOptions.collect { "$it = ${this.properties[it]}" }.join(', '))
+			log.info("${beanName} config: " + configOptions.collect { "$it = ${this.properties[it]}" }.join(', '))
 
 			configDir = new File(baseConfigDir, beanName - "LdapServer")
 			dataDir = new File(configDir, "data")
@@ -96,6 +96,7 @@ class TransientGrailsLdapServer implements InitializingBean, BeanNameAware {
 	
 	void clean() {
 		if (running) {
+			log.info("${beanName} cleaning")
 			directoryService.revert()
 		}
 	}
@@ -121,6 +122,7 @@ class TransientGrailsLdapServer implements InitializingBean, BeanNameAware {
 		fixtureNames.each { fixtureName ->
 			def fixture = new File(fixturesDir, "${fixtureName}.ldif")
 			if (fixture.exists()) {
+				log.debug("${beanName}: loading fixture ${fixtureName}, binding = ${binding}")
 				def fixtureReader = new FileReader(fixture)
 				def engine = new SimpleTemplateEngine()
 				def ldif = engine.createTemplate(fixtureReader).make(binding).toString()
@@ -133,6 +135,7 @@ class TransientGrailsLdapServer implements InitializingBean, BeanNameAware {
 	}
 	
 	void loadLdif(String ldif) {
+		log.debug("${beanName}: loading ldif '$ldif'")
 		consumeLdifReader(new LdifReader(new StringReader(ldif)))
 	}
 	
