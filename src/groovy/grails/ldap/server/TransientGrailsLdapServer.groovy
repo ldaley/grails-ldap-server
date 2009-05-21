@@ -97,7 +97,6 @@ class TransientGrailsLdapServer implements InitializingBean, BeanNameAware {
 	void clean() {
 		if (running) {
 			directoryService.revert()
-			directoryService.changeLog.tag()
 		}
 	}
 
