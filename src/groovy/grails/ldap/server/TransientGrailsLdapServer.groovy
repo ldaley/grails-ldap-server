@@ -159,7 +159,7 @@ class TransientGrailsLdapServer implements InitializingBean, BeanNameAware {
 		directoryService.adminSession.exists(new LdapDN(dn as String))
 	}
 	
-	Map get(String dn) {
+	Map getAt(String dn) {
 		try {
 			def entry = directoryService.adminSession.lookup(new LdapDN(dn))
 			def entryMap = [:]

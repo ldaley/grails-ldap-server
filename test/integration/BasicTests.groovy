@@ -87,9 +87,9 @@ objectClass: organizationalPerson
 		assertFalse(d2LdapServer.exists("ou=test,dc=d2"))
 	}
 	
-	void testGetEntry() {
+	void testGetAt() {
 		d2LdapServer.loadFixture("some")
-		def entry = d2LdapServer.get("cn=cn2,dc=d2")
+		def entry = d2LdapServer["cn=cn2,dc=d2"]
 		assertTrue(entry instanceof Map)
 		
 		assertTrue(entry.cn instanceof List)
@@ -98,7 +98,7 @@ objectClass: organizationalPerson
 		assertTrue(entry.usercertificate.first() instanceof byte[])
 
 		d2LdapServer.loadFixture("country")
-		entry = d2LdapServer.get("c=au,dc=d2")
+		entry = d2LdapServer["c=au,dc=d2"]
 		assertEquals("au", entry.c)
 	}
 	
