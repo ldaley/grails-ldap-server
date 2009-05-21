@@ -7,7 +7,7 @@ class LdapServerGrailsPlugin {
 	def version = "0.1"
 	def grailsVersion = "1.1 > *"
 	def dependsOn = [:]
-	def pluginExcludes = []
+	def pluginExcludes = ["grails-app/ldap-servers"]
 
 	def author = "Luke Daley"
 	def authorEmail = "ld@ldaley.com"
