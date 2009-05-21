@@ -68,8 +68,8 @@ class TransientGrailsLdapServer implements InitializingBean, BeanNameAware {
 			log.info("${beanName} starting")
 			startDirectoryService()
 
-			loadLdifDir(schemaDir)
-			loadLdifDir(dataDir)
+			loadLdif(schemaDir)
+			loadLdif(dataDir)
 			
 			directoryService.changeLog.tag()
 			
@@ -137,6 +137,24 @@ class TransientGrailsLdapServer implements InitializingBean, BeanNameAware {
 		consumeLdifReader(new LdifReader(new StringReader(ldif)))
 	}
 	
+	void loadLdif(File file) {
+		if (file.exists()) {
+			if (file.directory) {
+				log.debug("Loading ldif in dir: ${file}")
+				file.listFiles(ldifFileNameFilter).sort().each {
+					loadLdif(it)
+				}
+			} else {
+				log.debug("Loading ldif in file: ${file}")
+				consumeLdifReader(new LdifReader(file))
+			}
+		}
+	}
+	
+	void loadLdif(ldif) {
+		loadLdif(ldif as String)
+	}
+	
 	boolean exists(String dn) {
 		directoryService.adminSession.exists(new LdapDN(dn as String))
 	}
@@ -162,19 +180,7 @@ class TransientGrailsLdapServer implements InitializingBean, BeanNameAware {
 			null
 		}
 	}
-	
-	void loadLdifFile(File file) {
-		consumeLdifReader(new LdifReader(file))
-	}
-	
-	void loadLdifDir(File dir) {
-		if (dir.exists()) {
-			dir.listFiles(ldifFileNameFilter).sort().each {
-				loadLdifFile(it)
-			}
-		}
-	}
-	
+
 	private startDirectoryService() {
 		
 		directoryService = new DefaultDirectoryService()
