@@ -16,7 +16,7 @@ class LdapServerGrailsPlugin {
 
 	def documentation = "http://grails.org/plugin/grails-ldap-server"
 	
-	def watchedResources = ["file:./grails-app/ldap-servers/*/data/*.ldif"]
+	def watchedResources = ["file:./grails-app/ldap-servers/*/data/*.ldif", "file:./grails-app/ldap-servers/*/schema/*.ldif"]
 	
 	def servers = []
 	
