@@ -15,7 +15,7 @@ class LdapServerGrailsPlugin {
 	def description = 'Allows the embedding of an LDAP directory (via ApacheDS) for testing purposes'
 	def documentation = "http://grails.org/plugin/grails-ldap-server"
 	
-	def pluginExcludes = ["grails-app/ldap-servers"]
+	def pluginExcludes = ["grails-app/ldap-servers/**"]
 	
 	def servers = []
 	
