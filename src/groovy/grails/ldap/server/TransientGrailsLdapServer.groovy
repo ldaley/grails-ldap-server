@@ -11,13 +11,14 @@ import org.apache.directory.shared.ldap.ldif.LdifUtils
 import org.apache.directory.shared.ldap.exception.LdapNameNotFoundException
 
 import org.springframework.beans.factory.InitializingBean
+import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.BeanNameAware
 
 import grails.util.BuildSettingsHolder
 
 import groovy.text.SimpleTemplateEngine
 
-class TransientGrailsLdapServer implements InitializingBean, BeanNameAware {
+class TransientGrailsLdapServer implements InitializingBean, DisposableBean, BeanNameAware {
 	
 	final static configOptions = ["port", "base", "indexed"]
 	final static baseWorkingDir = new File(BuildSettingsHolder.settings?.projectWorkDir, "ldap-server")
@@ -87,6 +88,10 @@ class TransientGrailsLdapServer implements InitializingBean, BeanNameAware {
 			running = false
 			log.info("${beanName} stopped")
 		}
+	}
+	
+	void destroy() {
+		stop()
 	}
 	
 	void restart() {
