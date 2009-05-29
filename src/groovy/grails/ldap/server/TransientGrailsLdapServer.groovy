@@ -114,6 +114,10 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 		loadFixtures([fixtureName] as String[], binding)
 	}
 	
+	void loadFixture(String fixtureName, Map binding) {
+		loadFixtures([fixtureName] as String[], binding)
+	}
+	
 	void loadFixtures(String[] fixtureNames) {
 		loadFixtures(fixtureNames, [:])
 	}

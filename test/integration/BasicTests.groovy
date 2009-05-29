@@ -66,6 +66,15 @@ class BasicTests extends GroovyTestCase {
 		d2LdapServer.loadFixtures("personTemplate", "ouTemplate", cn: "cn2", sn: "sn2", ou: "ou1")
 		assertTrue(d2LdapServer.exists("cn=cn2,dc=d2"))
 		assertTrue(d2LdapServer.exists("ou=ou1,dc=d2"))
+		
+		d2LdapServer.loadFixture("personTemplate", [cn: "cn3", sn: "sn3"])
+		assertTrue(d2LdapServer.exists("cn=cn3,dc=d2"))
+		
+		// Commented out because Groovy doesn't support this syntax properly.
+/*		d2LdapServer.loadFixtures("personTemplate", "ouTemplate", [cn: "cn4", sn: "sn4", ou: "ou2"])
+		assertTrue(d2LdapServer.exists("cn=cn4,dc=d2"))
+		assertTrue(d2LdapServer.exists("ou=ou2,dc=d2"))*/
+		
 	}
 
 	void testLoadLdif() {
