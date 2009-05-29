@@ -135,7 +135,6 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 				def fixtureReader = new FileReader(fixture)
 				def engine = new SimpleTemplateEngine()
 				def ldif = engine.createTemplate(fixtureReader).make(binding).toString()
-				println ldif
 				loadLdif(ldif)
 			} else {
 				throw new IllegalArgumentException("Cannot load fixture '${fixtureName} as it does not exist")
