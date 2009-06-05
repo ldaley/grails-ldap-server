@@ -4,7 +4,7 @@ class LdapServerGrailsPlugin {
 
 	static beanNameSuffix = "LdapServer"
 	
-	def version = "0.1.2"
+	def version = "0.1.3"
 	def grailsVersion = "1.1 > *"
 	def dependsOn = [:]
 	def watchedResources = ["file:./grails-app/ldap-servers/*/data/*.ldif", "file:./grails-app/ldap-servers/*/schema/*.ldif"]
