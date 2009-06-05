@@ -103,6 +103,7 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 		if (running) {
 			log.info("${beanName} cleaning")
 			directoryService.revert()
+			directoryService.changeLog.tag()
 		}
 	}
 
