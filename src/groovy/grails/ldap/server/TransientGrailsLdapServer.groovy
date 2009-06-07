@@ -61,6 +61,10 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 			
 			start()
 			initialised = true
+			
+			addShutdownHook {
+				this.stop()
+			}
 		}
 	}
 	
