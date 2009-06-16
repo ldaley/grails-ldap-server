@@ -18,10 +18,38 @@
     </build>
     <dependencies>
         <dependency>
-         <groupId>org.apache.directory.server</groupId>
-         <artifactId>apacheds-all</artifactId>
-         <version>1.5.4</version>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-core</artifactId>
+            <version>1.5.4</version>
+            <exclusions>
+                <exclusion>  
+                    <groupId>org.slf4j</groupId>  
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-bootstrap-partition</artifactId>
+            <version>1.5.4</version>
+            <exclusions>
+                <exclusion>  
+                    <groupId>org.slf4j</groupId>  
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-protocol-ldap</artifactId>
+            <version>1.5.4</version>
+            <exclusions>
+                <exclusion>  
+                    <groupId>org.slf4j</groupId>  
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>        
     </dependencies>
     <properties>
         <grailsVersion>1.0.2</grailsVersion>
