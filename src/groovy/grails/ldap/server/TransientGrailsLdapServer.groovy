@@ -17,12 +17,15 @@ import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.BeanNameAware
 
+import grails.util.BuildSettingsHolder
+
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+
 import groovy.text.SimpleTemplateEngine
 
 class TransientGrailsLdapServer implements InitializingBean, DisposableBean, BeanNameAware {
 	
 	final static configOptions = ["port", "base", "indexed"]
-	final static baseConfigDir = new File("grails-app/ldap-servers")
 	final static ldifFileNameFilter = [accept: { File dir, String name -> name.endsWith(".ldif") }] as FilenameFilter
 	
 	String beanName
@@ -53,6 +56,8 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 
 			log.info("${beanName} config: " + configOptions.collect { "$it = ${this.properties[it]}" }.join(', '))
 
+			def baseConfigDirPath = (ApplicationHolder.application.warDeployed) ? "WEB-INF/grails-app/ldap-servers" : "grails-app/ldap-servers"
+			def baseConfigDir = new File(baseConfigDirPath)
 			configDir = new File(baseConfigDir, beanName - "LdapServer")
 			dataDir = new File(configDir, "data")
 			fixturesDir = new File(configDir, "fixtures")
