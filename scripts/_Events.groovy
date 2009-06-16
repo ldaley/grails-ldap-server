@@ -7,6 +7,11 @@ eventCreateWarStart = { warName, stagingDir ->
 				fileset(dir:"${basedir}/grails-app/ldap-servers", includes:"${ldapServer.key}/**")
 			}
 		}
+	} else {
+		def libs = new File(ldapServerPluginDir, "lib")
+		libs.eachFile { file ->
+			ant.delete(file: "$stagingDir/WEB-INF/lib/${file.name}")
+		}
 	}
 	
 }
