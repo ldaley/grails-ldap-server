@@ -205,7 +205,7 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 		
 		directoryService = new DefaultDirectoryService()
 		directoryService.changeLog.enabled = true
-		def workingDir = new File(WebUtils.getTempDir(ServletContextHolder.servletContext), "ldap-server/$beanName")
+		def workingDir = getWorkDir()
 		if (workingDir.exists()) workingDir.deleteDir()
 		directoryService.workingDirectory = workingDir
 		
@@ -259,5 +259,10 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 			def ldif = LdifUtils.convertToLdif(entry, Integer.MAX_VALUE)
 			directoryService.adminSession.add(directoryService.newEntry(ldif, entry.dn.toString()))
 		}
+	}
+	
+	private getWorkDir() {
+		def base = ServletContextHolder.servletContext ?: BuildSettingsHolder.settings?.projectWorkDir
+		new File(base, "ldap-servers/$beanName")
 	}
 }
