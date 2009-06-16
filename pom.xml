@@ -26,6 +26,22 @@
                     <groupId>org.slf4j</groupId>  
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>commons-collections</groupId>  
+                    <artifactId>commons-collections</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>  
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-lang</groupId>  
+                    <artifactId>commons-lang</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>antlr</groupId>  
+                    <artifactId>antlr</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
