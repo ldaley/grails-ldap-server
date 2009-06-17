@@ -56,7 +56,7 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 
 			log.info("${beanName} config: " + configOptions.collect { "$it = ${this.properties[it]}" }.join(', '))
 
-			def baseConfigDirPath = (ApplicationHolder.application.warDeployed) ? "WEB-INF/grails-app/ldap-servers" : "grails-app/ldap-servers"
+			def baseConfigDirPath = (ApplicationHolder.application.warDeployed) ? ApplicationHolder.application.parentContext.getResource("WEB-INF/grails-app/ldap-servers").file.path : "grails-app/ldap-servers"
 			def baseConfigDir = new File(baseConfigDirPath)
 			configDir = new File(baseConfigDir, beanName - "LdapServer")
 			dataDir = new File(configDir, "data")
