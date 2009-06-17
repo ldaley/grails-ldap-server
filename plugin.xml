@@ -1,4 +1,4 @@
-<plugin name='ldap-server' version='0.1.5' grailsVersion='1.1 &gt; *'>
+<plugin name='ldap-server' version='0.1.6' grailsVersion='1.1 &gt; *'>
   <author>Luke Daley</author>
   <authorEmail>ld@ldaley.com</authorEmail>
   <title>Embedded LDAP Server Plugin</title>
