@@ -262,7 +262,7 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 	}
 	
 	private getWorkDir() {
-		def base = WebUtils.getTempDir(ServletContextHolder.servletContext) ?: new File(BuildSettingsHolder.settings?.projectWorkDir)
+		def base = ServletContextHolder.servletContext ? WebUtils.getTempDir(ServletContextHolder.servletContext) : new File(BuildSettingsHolder.settings?.projectWorkDir, beanName)
 		new File(base, "ldap-servers/$beanName")
 	}
 }
