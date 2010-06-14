@@ -24,31 +24,31 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import groovy.text.SimpleTemplateEngine
 
 class TransientGrailsLdapServer implements InitializingBean, DisposableBean, BeanNameAware {
-	
+
 	final static configOptions = ["port", "base", "indexed"]
 	final static ldifFileNameFilter = [accept: { File dir, String name -> name.endsWith(".ldif") }] as FilenameFilter
-	
+
 	String beanName
-	
+
 	Integer port = 10389
 	String base = "dc=grails,dc=org"
 	String[] indexed = ["objectClass", "ou", "uid"]
-	
-	private log 
-	
-	final directoryService
-	final ldapService
-	
-	final baseDn
-	
-	final configDir
-	final dataDir
-	final fixturesDir
-	final schemaDir
-	
-	final running = false
-	final initialised = false
-	
+
+	private log
+
+	DefaultDirectoryService directoryService
+	LdapService ldapService
+
+	LdapDN baseDn
+
+	File configDir
+	File dataDir
+	File fixturesDir
+	File schemaDir
+
+	boolean running = false
+	boolean initialised = false
+
 	void afterPropertiesSet()
 	{
 		if (!initialised) {
@@ -63,16 +63,16 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 			fixturesDir = new File(configDir, "fixtures")
 			schemaDir = new File(configDir, "schema")
 			baseDn = new LdapDN(base)
-			
+
 			start()
 			initialised = true
-			
+
 			addShutdownHook {
 				this.stop()
 			}
 		}
 	}
-	
+
 	void start() {
 		if (!running) {
 			log.info("${beanName} starting")
@@ -80,15 +80,15 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 
 			loadLdif(schemaDir)
 			loadLdif(dataDir)
-			
+
 			directoryService.changeLog.tag()
-			
+
 			startLdapService()
 			running = true
 			log.info("${beanName} starup complete")
 		}
 	}
-	
+
 	void stop() {
 		if (running) {
 			log.info("${beanName} stopping")
@@ -98,16 +98,16 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 			log.info("${beanName} stopped")
 		}
 	}
-	
+
 	void destroy() {
 		stop()
 	}
-	
+
 	void restart() {
 		stop()
 		start()
 	}
-	
+
 	void clean() {
 		if (running) {
 			log.info("${beanName} cleaning")
@@ -123,19 +123,19 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 	void loadFixture(Map binding, String fixtureName) {
 		loadFixtures([fixtureName] as String[], binding)
 	}
-	
+
 	void loadFixture(String fixtureName, Map binding) {
 		loadFixtures([fixtureName] as String[], binding)
 	}
-	
+
 	void loadFixtures(String[] fixtureNames) {
 		loadFixtures(fixtureNames, [:])
 	}
-	
+
 	void loadFixtures(Map binding, String[] fixtureNames) {
 		loadFixtures(fixtureNames, binding)
 	}
-	
+
 	void loadFixtures(String[] fixtureNames, Map binding) {
 		binding = binding ?: [:]
 		fixtureNames.each { fixtureName ->
@@ -151,12 +151,12 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 			}
 		}
 	}
-	
+
 	void loadLdif(String ldif) {
 		log.debug("${beanName}: loading ldif '$ldif'")
 		consumeLdifReader(new LdifReader(new StringReader(ldif)))
 	}
-	
+
 	void loadLdif(File file) {
 		if (file.exists()) {
 			if (file.directory) {
@@ -170,15 +170,15 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 			}
 		}
 	}
-	
+
 	void loadLdif(ldif) {
 		loadLdif(ldif as String)
 	}
-	
+
 	boolean exists(String dn) {
 		directoryService.adminSession.exists(new LdapDN(dn as String))
 	}
-	
+
 	Map getAt(String dn) {
 		try {
 			def entry = directoryService.adminSession.lookup(new LdapDN(dn))
@@ -202,44 +202,44 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 	}
 
 	private startDirectoryService() {
-		
+
 		directoryService = new DefaultDirectoryService()
 		directoryService.changeLog.enabled = true
 		def workingDir = getWorkDir()
 		if (workingDir.exists()) workingDir.deleteDir()
 		directoryService.workingDirectory = workingDir
-		
+
 		def partition = addPartition(baseDn.rdn.normValue, base)
 		addIndex(partition, *indexed)
-		
+
 		directoryService.startup()
 		createBase()
 	}
-	
+
 	private startLdapService() {
 		ldapService = new LdapService()
 		ldapService.socketAcceptor = new SocketAcceptor(null)
 		ldapService.directoryService = directoryService
 		ldapService.ipPort = port
-		
+
 		ldapService.start()
 	}
-	
+
 	private stopDirectoryService() {
 		directoryService.shutdown()
 	}
-	
+
 	private stopLdapService() {
 		ldapService.stop()
 	}
-	
+
 	private createBase() {
 		def entry = directoryService.newEntry(baseDn)
 		entry.add("objectClass", "top", "domain", "extensibleObject")
 		entry.add(baseDn.rdn.normType, baseDn.rdn.normValue)
 		directoryService.adminSession.add(entry)
 	}
-	
+
 	private addPartition(partitionId, partitionDn) {
 		def partition = new JdbmPartition()
 		partition.id = partitionId
@@ -260,7 +260,7 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 			directoryService.adminSession.add(directoryService.newEntry(ldif, entry.dn.toString()))
 		}
 	}
-	
+
 	private getWorkDir() {
 		def base = ServletContextHolder.servletContext ? WebUtils.getTempDir(ServletContextHolder.servletContext) : new File(BuildSettingsHolder.settings?.projectWorkDir, beanName)
 		new File(base, "ldap-servers/$beanName")
