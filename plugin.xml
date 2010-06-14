@@ -5,9 +5,14 @@
   <description>Allows the embedding of an LDAP directory (via ApacheDS) for testing purposes</description>
   <documentation>http://grails.org/plugin/grails-ldap-server</documentation>
   <resources>
+    <resource>Config</resource>
     <resource>DataSource</resource>
     <resource>UrlMappings</resource>
-    <resource>Config</resource>
   </resources>
-  <dependencies />
+  <dependencies>
+    <resolvers>
+      <resolver type='grailsPlugins' name='grailsPlugins' />
+    </resolvers>
+  </dependencies>
+  <behavior />
 </plugin>
