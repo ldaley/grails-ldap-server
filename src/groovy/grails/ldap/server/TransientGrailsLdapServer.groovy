@@ -1,5 +1,7 @@
 package grails.ldap.server
 
+import javax.servlet.ServletContext
+
 import org.apache.directory.server.core.DefaultDirectoryService
 import org.apache.directory.server.ldap.LdapService
 import org.apache.directory.server.protocol.shared.SocketAcceptor
@@ -11,11 +13,12 @@ import org.apache.directory.shared.ldap.ldif.LdifUtils
 import org.apache.directory.shared.ldap.exception.LdapNameNotFoundException
 
 import org.springframework.web.util.WebUtils
-import org.codehaus.groovy.grails.web.context.ServletContextHolder
 
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.BeanNameAware
+
+import org.springframework.web.context.ServletContextAware
 
 import grails.util.BuildSettingsHolder
 
@@ -23,12 +26,13 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 import groovy.text.SimpleTemplateEngine
 
-class TransientGrailsLdapServer implements InitializingBean, DisposableBean, BeanNameAware {
+class TransientGrailsLdapServer implements InitializingBean, DisposableBean, BeanNameAware, ServletContextAware {
 
 	final static configOptions = ["port", "base", "indexed"]
 	final static ldifFileNameFilter = [accept: { File dir, String name -> name.endsWith(".ldif") }] as FilenameFilter
 
 	String beanName
+	ServletContext servletContext
 
 	Integer port = 10389
 	String base = "dc=grails,dc=org"
@@ -262,7 +266,7 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 	}
 
 	private getWorkDir() {
-		def base = ServletContextHolder.servletContext ? WebUtils.getTempDir(ServletContextHolder.servletContext) : new File(BuildSettingsHolder.settings?.projectWorkDir, beanName)
+		def base = servletContext ? WebUtils.getTempDir(servletContext) : new File(BuildSettingsHolder.settings?.projectWorkDir, beanName)
 		new File(base, "ldap-servers/$beanName")
 	}
 }
