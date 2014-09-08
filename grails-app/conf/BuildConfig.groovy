@@ -8,6 +8,7 @@ grails.project.dependency.resolution = {
 	dependencies {
 		compile 'org.apache.directory.server:apacheds-core:1.5.4'
 		compile 'org.apache.directory.server:apacheds-protocol-ldap:1.5.4'
+		compile 'org.apache.directory.shared:shared-ldap:0.9.12'
 	}
 	
 	plugins {
