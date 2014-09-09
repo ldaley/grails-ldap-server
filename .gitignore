@@ -1,4 +1,5 @@
 *.log
 target
+target-eclipse
 *.xml
 *.zip
