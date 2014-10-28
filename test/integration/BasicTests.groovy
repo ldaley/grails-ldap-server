@@ -89,6 +89,29 @@ objectClass: organizationalPerson
 		assertTrue(d2LdapServer.exists("cn=cn3,dc=d2"))
 	}
 	
+	void testLoadSchemaLdif() {
+		d2LdapServer.loadLdif("""
+dn: cn=schema
+changetype: modify
+add: attributetypes
+attributetypes: ( 1.3.6.1.4.1.99999.2.1.0.0 NAME 'myRegionalOffice' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsMatch SYNTAX '1.3.6.1.4.1.1466.115.121.1.15' )
+-
+add: objectclasses
+objectclasses: (  1.3.6.1.4.1.99999.2.3.1.0.0  NAME 'myUser' SUP 'person' STRUCTURAL MAY ( myRegionalOffice ) )
+-
+""")
+		d2LdapServer.loadLdif("""
+dn: cn=cn3,dc=d2
+cn: cn3
+sn: sn
+objectClass: person
+objectClass: top
+objectClass: myUser
+myRegionalOffice: nowhere
+""")
+		assertTrue(d2LdapServer.exists("cn=cn3,dc=d2"))
+	}
+	
 	void testClean() {
 		d2LdapServer.loadFixture("testou")
 		assertTrue(d2LdapServer.exists("ou=test,dc=d2"))

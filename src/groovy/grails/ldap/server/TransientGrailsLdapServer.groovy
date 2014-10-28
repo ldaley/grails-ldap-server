@@ -8,6 +8,7 @@ import org.apache.directory.server.protocol.shared.SocketAcceptor
 import org.apache.directory.shared.ldap.name.LdapDN
 import org.apache.directory.server.core.partition.impl.btree.jdbm.JdbmPartition
 import org.apache.directory.server.core.partition.impl.btree.jdbm.JdbmIndex
+import org.apache.directory.shared.ldap.ldif.LdifEntry
 import org.apache.directory.shared.ldap.ldif.LdifReader
 import org.apache.directory.shared.ldap.ldif.LdifUtils
 import org.apache.directory.shared.ldap.exception.LdapNameNotFoundException
@@ -259,9 +260,13 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 
 	private consumeLdifReader(ldifReader) {
 		while (ldifReader.hasNext()) {
-			def entry = ldifReader.next()
-			def ldif = LdifUtils.convertToLdif(entry, Integer.MAX_VALUE)
-			directoryService.adminSession.add(directoryService.newEntry(ldif, entry.dn.toString()))
+			LdifEntry entry = ldifReader.next()
+			if ( entry.isChangeModify() ) {
+				directoryService.adminSession.modify(entry.dn, entry.modificationList)
+			} else {
+				def ldif = LdifUtils.convertToLdif(entry, Integer.MAX_VALUE)
+				directoryService.adminSession.add(directoryService.newEntry(ldif, entry.dn.toString()))
+			}
 		}
 	}
 
