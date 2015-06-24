@@ -23,7 +23,9 @@ import org.springframework.web.context.ServletContextAware
 
 import grails.util.BuildSettingsHolder
 
-import org.codehaus.groovy.grails.commons.ApplicationHolder
+import grails.util.Holders
+
+
 
 import groovy.text.SimpleTemplateEngine
 
@@ -61,7 +63,7 @@ class TransientGrailsLdapServer implements InitializingBean, DisposableBean, Bea
 
 			log.info("${beanName} config: " + configOptions.collect { "$it = ${this.properties[it]}" }.join(', '))
 
-			def baseConfigDirPath = (ApplicationHolder.application.warDeployed) ? ApplicationHolder.application.parentContext.getResource("WEB-INF/grails-app/ldap-servers").file.path : "grails-app/ldap-servers"
+			def baseConfigDirPath = (Holders.grailsApplication.warDeployed) ? Holders.grailsApplication.parentContext.getResource("WEB-INF/grails-app/ldap-servers").file.path : "grails-app/ldap-servers"
 			def baseConfigDir = new File(baseConfigDirPath)
 			configDir = new File(baseConfigDir, beanName - "LdapServer")
 			dataDir = new File(configDir, "data")
